@@ -1,11 +1,11 @@
 from threading import Thread
 import datetime
 
-from request.base import load_request
-from request.recv import recv_request
-from response.generate import generate_response_body_from_file
-from response.send import send_response, response_for_get, response_for_not_implemented_method
-from http.get import get
+from framework.request.base import load_request
+from framework.request.recv import recv_request
+from framework.response.generate import generate_response_body_from_file
+from framework.response.send import send_response, response_for_get, response_for_not_implemented_method
+from framework.http.get import get
 
 
 class WorkerThread(Thread):

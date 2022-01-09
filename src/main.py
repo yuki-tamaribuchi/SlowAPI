@@ -1,4 +1,4 @@
-from server.server import Server
+from framework.server.server import Server
 from settings import *
 
 try:

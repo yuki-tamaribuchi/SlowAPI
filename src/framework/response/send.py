@@ -1,4 +1,4 @@
-from response.generate import generate_http_response_line
+from framework.response.generate import generate_http_response_line
 
 def send_msg(client_sock, msg):
 		client_sock.send(bytes(msg, 'utf-8'))

@@ -1,5 +1,5 @@
-from response.generate import generate_response_body_from_file
-from response.send import response_for_get, send_response, send_msg
+from framework.response.generate import generate_response_body_from_file
+from framework.response.send import response_for_get, send_response, send_msg
 
 def get(client_sock, filepath):
 	response_for_get(client_sock)

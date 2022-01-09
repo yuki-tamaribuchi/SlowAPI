@@ -1,6 +1,6 @@
 import socket
 
-from server.workerthread import WorkerThread
+from framework.server.workerthread import WorkerThread
 
 class Server:
 
