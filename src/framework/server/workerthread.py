@@ -4,7 +4,7 @@ import datetime
 from framework.request.base import load_request
 from framework.request.recv import recv_request
 from framework.response.generate import generate_response_body_from_file
-from framework.response.send import send_response, response_for_get, response_for_not_implemented_method
+from framework.response.send import send_response
 from framework.http.get import get
 
 
@@ -25,7 +25,7 @@ class WorkerThread(Thread):
 			get(self.client_sock, self.request_dict['line']['uri'])
 			
 		else:
-			response_for_not_implemented_method(self.client_sock)
+			send_response(self.client_sock, 501)
 
 
 	def call(self):

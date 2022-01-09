@@ -1,6 +1,5 @@
 from framework.response.generate import generate_response_body_from_file
-from framework.response.send import response_for_get, send_response, send_msg
+from framework.response.send import send_response
 
 def get(client_sock, filepath):
-	response_for_get(client_sock)
-	send_response(client_sock, generate_response_body_from_file(filepath))
+	send_response(client_sock, 200, generate_response_body_from_file(filepath))
