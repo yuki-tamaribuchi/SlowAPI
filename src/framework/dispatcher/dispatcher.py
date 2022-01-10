@@ -18,10 +18,15 @@ def dispatcher(request_dict):
 			else:
 				return
 
+	def is_method_allowed(method):
+		if method in HTTP_METHODS:
+			return HTTP_METHODS[method]
+		return None
+
 
 	controller_class = search_url_pattern(request_dict['line']['uri'], url_patterns)
 
-	http_method = HTTP_METHODS[request_dict['line']['method']]
+	http_method = is_method_allowed(request_dict['line']['method'])
 
 	response_body = ''	
 
