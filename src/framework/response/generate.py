@@ -16,3 +16,13 @@ def generate_response_body_from_file(filepath):
 			return body
 		except (FileNotFoundError, IsADirectoryError) as e:
 			return ''
+
+
+def generate_response_headers(headers_dict):
+	headers = ""
+	
+	for k, v in headers_dict.items():
+		header = '{}: {}\r\n'.format(k, v)
+		headers+=header
+	
+	return headers

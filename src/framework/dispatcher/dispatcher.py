@@ -1,3 +1,7 @@
+import datetime
+
+from framework.response.generate import generate_response_headers
+
 from urls import url_patterns
 
 def dispatcher(request_dict):
@@ -36,7 +40,7 @@ def dispatcher(request_dict):
 			controller_instance = controller_class(request_dict)
 			if hasattr(controller_instance, http_method):
 				controller_method = getattr(controller_instance, http_method)
-				status_code, response_headers, response_body = controller_method()
+				status_code, custom_headers, response_body = controller_method()
 
 
 			else:
@@ -46,11 +50,24 @@ def dispatcher(request_dict):
 	else:
 		status_code = 501
 
+
+	headers = {
+		'Connection': 'Keep-Alive',
+		'Content-Type': 'application/json',
+		'Date': datetime.datetime.now().strftime("%a, %d %b %Y %X %Z"),
+		'Keep-Alive':'timeout=5'
+	}
+
+	headers.update(custom_headers)
+	response_headers = generate_response_headers(headers)
+	print(response_headers)
+
+	
 	response_dict = {
 		'line': {
 			'status_code': status_code
 		},
-		'headers':{},
+		'headers':headers,
 		'body':response_body
 	}
 
