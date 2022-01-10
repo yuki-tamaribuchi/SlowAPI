@@ -18,7 +18,7 @@ def dispatcher(request_dict):
 	
 
 	if controller_class:
-		controller_instance = controller_class()
+		controller_instance = controller_class(request_dict)
 		if hasattr(controller_class, 'get'):
 			status_code, response_body = controller_instance.get()
 		else:
@@ -30,6 +30,7 @@ def dispatcher(request_dict):
 		'line': {
 			'status_code': status_code
 		},
+		'headers':{},
 		'body':response_body
 	}
 
