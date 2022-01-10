@@ -13,6 +13,8 @@ def dispatcher(request_dict):
 
 	controller_class = search_url_pattern(request_dict['line']['uri'], url_patterns)
 
+	response_body = ''	
+
 	
 
 	if controller_class:
@@ -23,7 +25,8 @@ def dispatcher(request_dict):
 		else:
 			status_code = 501
 			response_body = ''
-		
+	else:
+		status_code = 404
 
 	response_dict = {
 		'line': {
