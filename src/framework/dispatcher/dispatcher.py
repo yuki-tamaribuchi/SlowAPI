@@ -31,7 +31,9 @@ def dispatcher(request_dict):
 			controller_instance = controller_class(request_dict)
 			if hasattr(controller_instance, http_method):
 				controller_method = getattr(controller_instance, http_method)
-				status_code, response_body = controller_method()
+				status_code, response_headers, response_body = controller_method()
+
+
 			else:
 				status_code = 405
 		else:

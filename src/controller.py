@@ -7,13 +7,13 @@ class SampleController:
 		self.request_dict = request_dict
 
 	def get(self):
-		return 200, 'Hello from SampleController Get'
+		return 200, {}, 'Hello from SampleController Get'
 	
 	def post(self):
-		return 200, 'Hello from SampleController Post. We got {}'.format(self.request_dict['body'])
+		return 200, {}, 'Hello from SampleController Post. We got {}'.format(self.request_dict['body'])
 
 	def put(self):
-		return 200, 'Hello from SampleController Put. We got {}'.format(self.request_dict['body'])
+		return 200, {}, 'Hello from SampleController Put. We got {}'.format(self.request_dict['body'])
 
 	def delete(self):
-		return 200, 'Hello from SampleController Delete.'
+		return 200, {}, 'Hello from SampleController Delete.'
