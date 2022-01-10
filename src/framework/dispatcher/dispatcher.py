@@ -20,11 +20,9 @@ def dispatcher(request_dict):
 	if controller_class:
 		controller_instance = controller_class()
 		if hasattr(controller_class, 'get'):
-			status_code = 200
-			response_body = controller_instance.get()
+			status_code, response_body = controller_instance.get()
 		else:
 			status_code = 501
-			response_body = ''
 	else:
 		status_code = 404
 

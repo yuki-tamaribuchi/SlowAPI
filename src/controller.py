@@ -4,6 +4,6 @@ def sample_controller(request_dict):
 
 class SampleController:
 	def get(self):
-		return 'Hello from SampleController'
+		return 200, 'Hello from SampleController'
 
 	
