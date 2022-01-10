@@ -26,7 +26,7 @@ class WorkerThread(Thread):
 
 
 	def response(self):
-		send_response(self.client_sock, self.response_dict['line']['status_code'], self.response_dict['body'])
+		send_response(self.client_sock, self.response_dict)
 		#if self.request_dict['line']['method']=="GET":
 		#	get(self.client_sock, self.request_dict['line']['uri'])
 		#	
