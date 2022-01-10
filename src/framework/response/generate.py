@@ -6,7 +6,7 @@ def generate_http_response_line(status_code):
 			501:'501 Not Implemented'
 		}
 
-		return 'HTTP/1.1 {}\r\n\r\n'.format(HTTP_STATUS_CODE[status_code])
+		return 'HTTP/1.1 {}\r\n'.format(HTTP_STATUS_CODE[status_code])
 
 
 def generate_response_body_from_file(filepath):

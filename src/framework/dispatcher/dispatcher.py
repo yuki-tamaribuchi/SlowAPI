@@ -33,6 +33,7 @@ def dispatcher(request_dict):
 	http_method = is_method_allowed(request_dict['line']['method'])
 
 	response_body = ''	
+	custom_headers = {}
 
 	
 	if http_method:
@@ -60,14 +61,13 @@ def dispatcher(request_dict):
 
 	headers.update(custom_headers)
 	response_headers = generate_response_headers(headers)
-	print(response_headers)
 
 	
 	response_dict = {
 		'line': {
 			'status_code': status_code
 		},
-		'headers':headers,
+		'headers':response_headers,
 		'body':response_body
 	}
 
