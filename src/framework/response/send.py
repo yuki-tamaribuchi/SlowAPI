@@ -8,3 +8,4 @@ def send_response(client_sock, status_code, response=None):
 	send_msg(client_sock, generate_http_response_line(status_code))
 	if response:
 		send_msg(client_sock, response)
+		send_msg(client_sock, "\r\n")
