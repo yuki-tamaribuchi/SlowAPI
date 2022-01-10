@@ -29,8 +29,9 @@ def dispatcher(request_dict):
 	if http_method:
 		if controller_class:
 			controller_instance = controller_class(request_dict)
-			if hasattr(controller_class, http_method):
-				status_code, response_body = controller_instance.get()
+			if hasattr(controller_instance, http_method):
+				controller_method = getattr(controller_instance, http_method)
+				status_code, response_body = controller_method()
 			else:
 				status_code = 405
 		else:
