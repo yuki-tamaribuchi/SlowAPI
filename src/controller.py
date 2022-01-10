@@ -12,3 +12,9 @@ class SampleController:
 	
 	def post(self):
 		return 200, 'Hello from SampleController Post. We got {}'.format(self.request_dict['body'])
+
+	def put(self):
+		return 200, 'Hello from SampleController Put. We got {}'.format(self.request_dict['body'])
+
+	def delete(self):
+		return 200, 'Hello from SampleController Delete.'
