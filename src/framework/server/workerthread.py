@@ -18,7 +18,7 @@ class WorkerThread(Thread):
 	def request(self):
 		request = recv_request(self.client_sock)
 		self.request_dict = load_request(request)
-		print('{} {} {}'.format(datetime.datetime.now().strftime("%c"), self.client_addr[0], self.request_dict['line']['uri']))
+		print('{} {} {} {}'.format(datetime.datetime.now().strftime("%c"), self.client_addr[0], self.request_dict['line']['method'], self.request_dict['line']['uri']))
 
 	
 	def dispatch(self):
