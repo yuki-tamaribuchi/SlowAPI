@@ -2,6 +2,7 @@ def generate_http_response_line(status_code):
 		HTTP_STATUS_CODE = {
 			200:'200 OK',
 			404:'404 Not Found',
+			405:'405 Method Not Allowed',
 			501:'501 Not Implemented'
 		}
 
