@@ -1,4 +1,5 @@
 import datetime
+import re
 
 from framework.response.generate import generate_response_headers
 
@@ -12,15 +13,86 @@ def dispatcher(request_dict):
 		'DELETE':'delete'
 	}
 
+	def create_path_parameters_mask(url_patterns):
+		path_parameters_masks=[]
+		for url_pattern in url_patterns:
+			splitted_url_pattern_list = url_pattern['url'].split("/")
+			mask = [True if re.match("\<(.*?)\>", token) else False for token in splitted_url_pattern_list]
+			path_parameters_masks.append(mask)
+		return path_parameters_masks
+
+
+	def is_matched_path(url, url_pattern, path_parameters_mask):
+		path_mask = [False if element else True for element in path_parameters_mask]
+		splitted_url = url.split("/")
+		if "" in splitted_url:
+			splitted_url.remove("")
+
+		splitted_url_pattern = url_pattern['url'].split("/")
+		if "" in splitted_url_pattern:
+			splitted_url_pattern.remove("")
+
+		masked_url = [token for mask, token in zip(path_mask, splitted_url) if mask]
+		masked_url_pattern = [token for mask, token in zip(path_mask, splitted_url_pattern) if mask]
+		if masked_url == masked_url_pattern:
+			return True
+		return False
+		
+
+	
+	def path_matching(url, url_patterns, path_parameters_masks):
+		matched_idx = []
+		for i in range(len(url_patterns)):
+			if is_matched_path(url, url_patterns[i], path_parameters_masks[i]):
+				matched_idx.append(i)
+		if len(matched_idx)==1:
+			return matched_idx[0]
+		elif not len(matched_idx)==1:
+			print('Path matching error')
+			return
+		return
+
+	
+
+
+	def extract_path_parameter(url, url_pattern, path_parameters_mask):
+		splitted_url_pattern = url_pattern['url'].split("/")
+		if "" in splitted_url_pattern:
+			splitted_url_pattern.remove("")
+
+		splitted_url = url.split("/")
+		if "" in splitted_url:
+			splitted_url.remove("")
+		
+		path_parameters_name = [token for mask, token in zip(path_parameters_mask, splitted_url_pattern) if mask]
+		path_parameters_value = [token for mask, token in zip(path_parameters_mask, splitted_url) if mask]
+		return path_parameters_name, path_parameters_value
+
+
+
+	def create_path_parameter_dict(path_parameters_name, path_parameters_value):
+		if not (len(path_parameters_name)==len(path_parameters_value)):
+			print('Path parameter error')
+			return
+		path_parameters_dict = {}
+		for i in range(len(path_parameters_name)):
+			if path_parameters_value[i]:
+				name=path_parameters_name[i][1:-1]
+				path_parameters_dict[name]=path_parameters_value[i]
+		return path_parameters_dict
+
+		
 
 	def search_url_pattern(url, url_patterns):
-		for url_pattern in url_patterns:
-			if not url_pattern['url'] == url:
-				continue
-			elif url_pattern['url'] == url:
-				return url_pattern['controller']
-			else:
-				return
+		path_parameters_masks = create_path_parameters_mask(url_patterns)
+		matched_idx = path_matching(url, url_patterns, path_parameters_masks)
+		if matched_idx:
+			path_parameters_name, path_parameters_value = extract_path_parameter(url, url_patterns[matched_idx], path_parameters_masks[matched_idx])
+			path_parameters_dict = create_path_parameter_dict(path_parameters_name, path_parameters_value)
+			return url_patterns[matched_idx]['controller'], path_parameters_dict
+		return
+
+
 
 	def is_method_allowed(method):
 		if method in HTTP_METHODS:
@@ -28,13 +100,13 @@ def dispatcher(request_dict):
 		return None
 
 
-	controller_class = search_url_pattern(request_dict['line']['uri'], url_patterns)
+	controller_class, path_parameters_dict = search_url_pattern(request_dict['line']['uri'], url_patterns)
+	request_dict['path_parameters'] = path_parameters_dict
 
 	http_method = is_method_allowed(request_dict['line']['method'])
 
 	response_body = ''	
 	custom_headers = {}
-
 	
 	if http_method:
 		if controller_class:
