@@ -26,12 +26,14 @@ class UsersController(ControllerBase):
 	def get(self):
 		import json
 
+		username = self.request_dict['path_parameters']['username']
+
 
 		with engine.connect() as cnx:
 			result = cnx.execute(
 				"""
-				SELECT * FROM users WHERE username="yuki";
-				"""
+				SELECT * FROM users WHERE username="{}";
+				""".format(username)
 			)
 			user = result.fetchone()
 
