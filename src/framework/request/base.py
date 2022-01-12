@@ -18,7 +18,7 @@ def load_request(request):
 		headers = {}
 		for line in header:
 			name, data = line.split(":", 1)
-			headers[name] = data
+			headers[name] = data[1:]
 		return headers
 	
 	request = request.decode('utf-8')
