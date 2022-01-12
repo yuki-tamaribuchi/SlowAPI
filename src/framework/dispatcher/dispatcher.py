@@ -2,8 +2,11 @@ import datetime
 import re
 
 from framework.response.generate import generate_response_headers
+from framework.middleware.base import RequestMiddlewareBase, ResponseMiddlewareBase
+from framework.exception.middleware import MiddlewareNotInheritancedException
 
 from urls import url_patterns
+from settings.middleware import MIDDLEWARES
 
 def dispatcher(request_dict):
 	HTTP_METHODS = {
@@ -15,6 +18,7 @@ def dispatcher(request_dict):
 
 	def create_path_parameters_mask(url_patterns):
 		path_parameters_masks=[]
+		
 		for url_pattern in url_patterns:
 			splitted_url_pattern_list = url_pattern['url'].split("/")
 			mask = [True if re.match("\<(.*?)\>", token) else False for token in splitted_url_pattern_list]
@@ -34,28 +38,42 @@ def dispatcher(request_dict):
 
 		masked_url = [token for mask, token in zip(path_mask, splitted_url) if mask]
 		masked_url_pattern = [token for mask, token in zip(path_mask, splitted_url_pattern) if mask]
+
 		if masked_url == masked_url_pattern:
-			return True
-		return False
+			return True, len(masked_url)
+		return False, None
 		
 
 	
 	def path_matching(url, url_patterns, path_parameters_masks):
-		matched_idx = []
+		matched_idx_arr = []
+		matched_length_arr = []
 		for i in range(len(url_patterns)):
-			if is_matched_path(url, url_patterns[i], path_parameters_masks[i]):
-				matched_idx.append(i)
-		if len(matched_idx)==1:
-			return matched_idx[0]
-		elif not len(matched_idx)==1:
-			print('Path matching error')
-			return
-		return
+			is_matched, matched_length = is_matched_path(url, url_patterns[i], path_parameters_masks[i])
+			if is_matched:
+				matched_idx_arr.append(i)
+				matched_length_arr.append(matched_length)
 
-	
+		if len(matched_idx_arr)==1:
+			return matched_idx_arr[0]
+
+		elif not len(matched_idx_arr)==1:
+			#もし2つ以上マッチしていたら最長一致法で選択する
+			max_length_idx = matched_idx_arr[matched_length_arr.index(max(matched_length_arr))]
+
+			#しかし、もしmatched_length_arrに同値が入っていたらどうするか決めていない
+			#この場合前方からサーチして最初に見つかったインデックスになる
+
+			
+			return max_length_idx
+			
+
 
 
 	def extract_path_parameter(url, url_pattern, path_parameters_mask):
+		if len(path_parameters_mask)==1 and path_parameters_mask[0]==False:
+			return None, None
+
 		splitted_url_pattern = url_pattern['url'].split("/")
 		if "" in splitted_url_pattern:
 			splitted_url_pattern.remove("")
@@ -66,6 +84,7 @@ def dispatcher(request_dict):
 		
 		path_parameters_name = [token for mask, token in zip(path_parameters_mask, splitted_url_pattern) if mask]
 		path_parameters_value = [token for mask, token in zip(path_parameters_mask, splitted_url) if mask]
+
 		return path_parameters_name, path_parameters_value
 
 
@@ -84,12 +103,15 @@ def dispatcher(request_dict):
 		
 
 	def search_url_pattern(url, url_patterns):
+		path_parameters_dict = {}
 		path_parameters_masks = create_path_parameters_mask(url_patterns)
 		matched_idx = path_matching(url, url_patterns, path_parameters_masks)
-		if matched_idx:
+		if not matched_idx is None:
 			path_parameters_name, path_parameters_value = extract_path_parameter(url, url_patterns[matched_idx], path_parameters_masks[matched_idx])
-			path_parameters_dict = create_path_parameter_dict(path_parameters_name, path_parameters_value)
-			return url_patterns[matched_idx]['controller'], path_parameters_dict
+			if path_parameters_name and path_parameters_value:
+				path_parameters_dict = create_path_parameter_dict(path_parameters_name, path_parameters_value)
+
+			return url_patterns[matched_idx]['controller'], path_parameters_dict, url_patterns[matched_idx]['middlewares']
 		return
 
 
@@ -100,8 +122,66 @@ def dispatcher(request_dict):
 		return None
 
 
-	controller_class, path_parameters_dict = search_url_pattern(request_dict['line']['uri'], url_patterns)
+
+	def load_middlewares(default_middlewares, custom_middlewares):
+		middlewares = default_middlewares+custom_middlewares
+		request_middlewares = []
+		response_middlewares = []
+
+		for middleware in middlewares:
+			if issubclass(middleware, RequestMiddlewareBase) and issubclass(middleware, ResponseMiddlewareBase):
+				request_middlewares.append(middleware)
+				response_middlewares.append(middleware)
+			elif issubclass(middleware, RequestMiddlewareBase):
+				request_middlewares.append(middleware)
+			elif issubclass(middleware, ResponseMiddlewareBase):
+				response_middlewares.append(middleware)
+			else:
+				raise MiddlewareNotInheritancedException(middleware)
+
+		return request_middlewares, response_middlewares
+
+
+
+	
+	def append_middleware_to_request_dict(request_dict, request_middlewares, response_middlewares):
+		request_dict['middlewares'] = {}
+		request_dict['middlewares']['request'] = request_middlewares
+		request_dict['middlewares']['response'] = response_middlewares
+		return request_dict
+
+
+
+
+
+	controller_class, path_parameters_dict, middlewares = search_url_pattern(request_dict['line']['uri'], url_patterns)
+
 	request_dict['path_parameters'] = path_parameters_dict
+
+
+
+
+
+
+	request_middlewares, response_middlewares = load_middlewares(MIDDLEWARES, middlewares)
+	request_dict = append_middleware_to_request_dict(request_dict, request_middlewares, response_middlewares)
+	
+
+
+	def execute_request_middlewares(request_dict):
+		for middleware in request_dict['middlewares']['request']:
+			request_dict = middleware(request_dict)()
+		return request_dict
+
+	request_dict = execute_request_middlewares(request_dict)
+
+
+
+
+
+
+
+	
 
 	http_method = is_method_allowed(request_dict['line']['method'])
 
@@ -142,5 +222,20 @@ def dispatcher(request_dict):
 		'headers':response_headers,
 		'body':response_body
 	}
+
+
+
+	def execute_response_middlewares(request_dict, response_dict):
+		middlewares = request_dict['middlewares']['response']
+		if middlewares:
+			for middleware in middlewares:
+				response_dict = middleware(response_dict)()
+			return response_dict
+		return response_dict
+
+	response_dict = execute_response_middlewares(request_dict, response_dict)
+
+
+
 
 	return response_dict
