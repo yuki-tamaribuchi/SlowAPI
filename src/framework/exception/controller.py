@@ -1,0 +1,2 @@
+class ControllerResponseDictValidationError(Exception):
+	pass
