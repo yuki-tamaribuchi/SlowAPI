@@ -1,4 +1,5 @@
 from framework.controller.base import ControllerBase
+from framework.controller.generator import generate_controller_response_dict
 
 from database import engine
 
@@ -46,4 +47,10 @@ class UsersController(ControllerBase):
 
 		data = json.dumps(data)
 
-		return 200, {}, data
+		controller_response_dict = generate_controller_response_dict(
+			status_code=200,
+			custom_headers={},
+			body=data
+		)
+
+		return controller_response_dict
