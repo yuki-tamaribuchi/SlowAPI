@@ -63,7 +63,7 @@ def resolve(request_dict, url_patterns):
 	matched_idx = path_matching(url, url_patterns, path_parameters_masks)
 
 	if matched_idx is None:
-		raise URLResolveNotFoundExecption(url)
+		raise URLResolveNotFoundException(url)
 
 
 	path_parameters_name, path_parameters_value = extract_path_parameter(url, url_patterns[matched_idx], path_parameters_masks[matched_idx])
