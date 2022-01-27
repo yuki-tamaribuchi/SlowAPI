@@ -1,11 +1,9 @@
 from framework.server.server import Server
 from settings import *
+from settings.server import SERVER_LISTEN_IP_ADDR, SERVER_LISTEN_PORT
 
 try:
-	
-	server = Server()
-
-	print('Server was started at 127.0.0.1:8000')
+	server = Server(SERVER_LISTEN_IP_ADDR, SERVER_LISTEN_PORT)
 	server.serve()
-finally:
-	print('Server was stopped...')
+except KeyboardInterrupt:
+	pass
