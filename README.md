@@ -1,9 +1,8 @@
-途中(１３章)まで「[伸び悩んでいる3年目Webエンジニアのための、Python Webアプリケーション自作入門](https://zenn.dev/bigen1925/books/introduction-to-web-application-with-python)」をベースに
-作成。
+# SlowAPI
 
-その後は自分で作成中。
+力技自作マイクロWebフレームワーク
 
-動的にHTMLページを作成する機能(GETのみ)とREST APIを実装する予定。
+
 
 <br>
 
@@ -58,7 +57,52 @@
 
 	必ず"self.request_dict"または"self.response_dict"をリターンしてください。
 
+<br>
+<br>
 
+# UML
+
+## クラス図
+
+![](.gitgub/readme_resources/slowapi-class.drawio.png)
+
+<br>
+
+## アクティビティ図
+
+![](.gitgub/readme_resources/slowapi-activity.drawio.png)
+
+<br>
+
+## シーケンス図
+![](.gitgub/readme_resources/slowapi-sequece.drawio.png)
+
+<br>
+<br>
+
+# 課題
+
+## ソケット通信
+
+ソケットの受信でループを使用するとブロッキングが発生する。
+
+現状では受信は4096bytesに制限されている。
+
+<br>
+
+## 高速化
+
+for文を回すことしか思いつかないため、動作が遅くなっている。
+
+また、URL解決にLRUキャッシュを使用する予定であったが、引数の型の都合で使用できなかった。
+
+<br>
+
+## 使用のし易さ
+
+作った本人でも２週間後には使い方がわからなくなっていた。
+
+<br>
 <br>
 
 # 経過
@@ -75,3 +119,11 @@
 			URLリゾルブで複数マッチした場合、最長一致で決定する機能を追加
 		1月14日 リファクタリング
 			dispatcherメソッドに何でも書きすぎていたためリファクタリング
+		1月28日 コード修正
+
+<br>
+<br>
+
+# 参考
+
+「[伸び悩んでいる3年目Webエンジニアのための、Python Webアプリケーション自作入門](https://zenn.dev/bigen1925/books/introduction-to-web-application-with-python)」の第１３章。
