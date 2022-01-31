@@ -11,6 +11,7 @@ from framework.urls.resolver import resolve
 from framework.middleware.loader import load as load_middlewares
 from framework.middleware.executer import execute_request_middlewares, execute_response_middlewares
 from framework.exception.security import HostNotAllowedException
+from framework.exception.urls import URLResolveNotFoundException
 
 from urls import url_patterns
 from settings.middleware import MIDDLEWARES
@@ -36,12 +37,7 @@ class WorkerThread(Thread):
 		self.request_dict = load_middlewares(self.request_dict, MIDDLEWARES)
 
 	def exc_request_middleware(self):
-		try:
-			self.request_dict = execute_request_middlewares(self.request_dict)
-		except HostNotAllowedException as e:
-			self.response_dict = generate_response_dict(400, "", "Host not allowed")
-			self.response()
-			raise e
+		self.request_dict = execute_request_middlewares(self.request_dict)
 
 	def dispatch_request(self):
 		self.response_dict=dispatch(self.request_dict)
@@ -54,13 +50,20 @@ class WorkerThread(Thread):
 
 
 	def call(self):
-		self.recv_and_load_request()
-		self.url_resolve()
-		self.load_middleware()
-		self.exc_request_middleware()
-		self.dispatch_request()
-		self.exc_response_middleware()
-		self.response()
+		try:
+			self.recv_and_load_request()
+			self.url_resolve()
+			self.load_middleware()
+			self.exc_request_middleware()
+			self.dispatch_request()
+			self.exc_response_middleware()
+		except HostNotAllowedException as e:
+			self.response_dict = generate_response_dict(400, "", "Host Not Allowed: {}".format(e.args[0]))
+		except URLResolveNotFoundException:
+			self.response_dict = generate_response_dict(404, "", "URL Not Found")
+		finally:
+			self.response()
+		
 
 
 	def start(self):
