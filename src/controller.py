@@ -50,11 +50,15 @@ class UsersController(ControllerBase):
 					#'profile_image':user[4]
 				}
 
-				data = json.dumps(data)
 				status_code = 200
 
 			else:
 				status_code = 404
+
+				data = {
+					"message": "Not Found"
+				}
+
 		else:
 			with engine.connect() as cnx:
 				result = cnx.execute(
@@ -77,11 +81,10 @@ class UsersController(ControllerBase):
 			data = {
 				'users':users_arr
 			}
-			data = json.dumps(data)
 			status_code = 200
 
 
-
+		data = json.dumps(data)
 		controller_response_dict = generate_controller_response_dict(
 			status_code=status_code,
 			custom_headers={},
