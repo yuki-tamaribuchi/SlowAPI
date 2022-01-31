@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
-BASEDIR = os.path.join(os.path.abspath(__file__))
+BASEDIR = Path(__file__).resolve().parent.parent
 STATIC_ROOT = os.path.join(BASEDIR, "static")
