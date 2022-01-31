@@ -65,10 +65,13 @@ def resolve(request_dict, url_patterns):
 	if matched_idx is None:
 		raise URLResolveNotFoundException(url)
 
+	#パスパラメータのname配列とvalue配列を作成
+	path_parameters_name_arr, path_parameters_value_arr = extract_path_parameter(url, url_patterns[matched_idx], path_parameters_masks[matched_idx])
 
-	path_parameters_name, path_parameters_value = extract_path_parameter(url, url_patterns[matched_idx], path_parameters_masks[matched_idx])
-	if path_parameters_name and path_parameters_value:
-		path_parameters_dict = create_path_parameter_dict(path_parameters_name, path_parameters_value)
+
+	
+	if path_parameters_name_arr and path_parameters_value_arr:
+		path_parameters_dict = create_path_parameter_dict(path_parameters_name_arr, path_parameters_value_arr)
 
 	request_dict['url_pattern'] = url_patterns[matched_idx]
 	request_dict['path_parameters'] = path_parameters_dict
