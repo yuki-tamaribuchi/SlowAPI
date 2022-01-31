@@ -51,8 +51,6 @@ def execute(request_dict):
 
 				headers = merge_headers(headers, custom_headers)
 
-				response_headers = generate_response_headers(headers)
-
 			else:
 				#メソッドが実装されていない場合の処理
 				#でも、先にNotImplementedErrorがraiseして呼び出されないかも
@@ -70,7 +68,7 @@ def execute(request_dict):
 		status_code = 501
 
 
-	
+	response_headers = generate_response_headers(headers)
 	response_dict = generate_response_dict(
 		status_code=status_code,
 		headers=response_headers,
