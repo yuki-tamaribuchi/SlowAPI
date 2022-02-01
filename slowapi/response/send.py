@@ -1,4 +1,4 @@
-from framework.response.generate import generate_http_response_line
+from slowapi.response.generate import generate_http_response_line
 
 def send_msg(client_sock, msg):
 		if not msg == "" or not None:

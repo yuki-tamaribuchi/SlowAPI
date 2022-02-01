@@ -1,17 +1,17 @@
 from threading import Thread
 import datetime
 
-from framework.request.base import load_request
-from framework.request.recv import recv_request
-from framework.response.generate import generate_response_dict
-from framework.response.send import send_response
-from framework.http.get import get
-from framework.dispatcher.dispatcher import dispatch
-from framework.urls.resolver import resolve
-from framework.middleware.loader import load as load_middlewares
-from framework.middleware.executer import execute_request_middlewares, execute_response_middlewares
-from framework.exception.security import HostNotAllowedException
-from framework.exception.urls import URLResolveNotFoundException
+from slowapi.request.base import load_request
+from slowapi.request.recv import recv_request
+from slowapi.response.generate import generate_response_dict
+from slowapi.response.send import send_response
+from slowapi.http.get import get
+from slowapi.dispatcher.dispatcher import dispatch
+from slowapi.urls.resolver import resolve
+from slowapi.middleware.loader import load as load_middlewares
+from slowapi.middleware.executer import execute_request_middlewares, execute_response_middlewares
+from slowapi.exception.security import HostNotAllowedException
+from slowapi.exception.urls import URLResolveNotFoundException
 
 from urls import url_patterns
 from settings.middleware import MIDDLEWARES

@@ -1,5 +1,5 @@
-from framework.middleware.base import RequestMiddlewareBase, ResponseMiddlewareBase
-from framework.exception.middleware import MiddlewareNotInheritancedException
+from slowapi.middleware.base import RequestMiddlewareBase, ResponseMiddlewareBase
+from slowapi.exception.middleware import MiddlewareNotInheritancedException
 
 
 def load_custom_middlewares(request_dict):

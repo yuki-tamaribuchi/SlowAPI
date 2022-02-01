@@ -1,6 +1,6 @@
 import socket
 
-from framework.server.workerthread import WorkerThread
+from slowapi.server.workerthread import WorkerThread
 
 class Server:
 	def __init__(self, ip_addr, port):

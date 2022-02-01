@@ -1,4 +1,4 @@
-from framework.controller.executer import execute
+from slowapi.controller.executer import execute
 
 
 def dispatch(request_dict):

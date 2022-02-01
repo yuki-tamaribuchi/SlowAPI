@@ -1,8 +1,8 @@
 import datetime
 
-from framework.response.generate import generate_response_dict, generate_response_headers
-from framework.controller.validator import controller_response_dict_validator
-from framework.http.methods import is_method_allowed
+from slowapi.response.generate import generate_response_dict, generate_response_headers
+from slowapi.controller.validator import controller_response_dict_validator
+from slowapi.http.methods import is_method_allowed
 
 
 

@@ -1,5 +1,5 @@
-from framework.controller.base import ControllerBase
-from framework.controller.generator import generate_controller_response_dict
+from slowapi.controller.base import ControllerBase
+from slowapi.controller.generator import generate_controller_response_dict
 
 from database import engine
 

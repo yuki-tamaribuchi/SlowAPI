@@ -1,4 +1,4 @@
-from framework.middleware.security import AllowedHostMiddleware
+from slowapi.middleware.security import AllowedHostMiddleware
 
 MIDDLEWARES = [
 	AllowedHostMiddleware,

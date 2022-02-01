@@ -1,5 +1,5 @@
-from framework.urls.parameter import create_path_parameters_mask, extract_path_parameter, create_path_parameter_dict
-from framework.exception.urls import URLResolveNotFoundException
+from slowapi.urls.parameter import create_path_parameters_mask, extract_path_parameter, create_path_parameter_dict
+from slowapi.exception.urls import URLResolveNotFoundException
 
 
 def is_matched_path(url, url_pattern, path_parameters_mask):

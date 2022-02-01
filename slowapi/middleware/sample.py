@@ -1,4 +1,4 @@
-from framework.middleware.base import ResponseMiddlewareBase, RequestMiddlewareBase
+from slowapi.middleware.base import ResponseMiddlewareBase, RequestMiddlewareBase
 
 
 class PrintRequestMiddleware(RequestMiddlewareBase):

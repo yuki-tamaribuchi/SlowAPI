@@ -1,9 +1,9 @@
 import string
 import re
 
-from framework.middleware.base import RequestMiddlewareBase
-from framework.exception.security import HostNotAllowedException
-from framework.utils.security import remove_special_characters, escape_single_and_double_quote_to_html_entity
+from slowapi.middleware.base import RequestMiddlewareBase
+from slowapi.exception.security import HostNotAllowedException
+from slowapi.utils.security import remove_special_characters, escape_single_and_double_quote_to_html_entity
 
 from settings.hosts import HOSTS
 
