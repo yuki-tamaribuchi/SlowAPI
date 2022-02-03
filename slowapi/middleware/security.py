@@ -27,7 +27,7 @@ class AllowedHostMiddleware(RequestMiddlewareBase):
 
 class SQLInjectionProtectMiddleware(RequestMiddlewareBase):
 
-	exclude_from_special = "&=;"
+	exclude_from_special = "&=;\{\}:,_"
 	special_chars = re.escape(re.sub("["+exclude_from_special+"]", "", string.punctuation))
 
 	def __call__(self) -> dict:
