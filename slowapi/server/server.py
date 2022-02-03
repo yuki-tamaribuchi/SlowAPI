@@ -10,7 +10,7 @@ class Server:
 	def serve(self):
 		
 
-		print('Server was started at {}:{}'.format(self.ip_addr, self.port))
+		print('Server was started at http://{}:{}\nTo stop server, press ctrl+c'.format(self.ip_addr, self.port))
 		sock = socket.socket(
 			family=socket.AF_INET,
 			type=socket.SOCK_STREAM
